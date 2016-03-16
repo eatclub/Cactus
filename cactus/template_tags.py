@@ -2,14 +2,14 @@
 import os
 import logging
 
-from django.template.base import Library
+from django import template
 from django.conf import settings
 from django.utils.encoding import force_text
 from django.utils.safestring import mark_safe
 
 logger = logging.getLogger(__name__)
 
-register = Library()
+register = template.Library()
 
 def static(context, link_url):
     """
