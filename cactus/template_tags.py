@@ -36,13 +36,13 @@ def static(context, link_url):
             url_helper_key = site.get_url_for_static(helper_key)
 
             if url_helper_key is not None:
-                return url_helper_key
+                return context.get('static_url_prefix', '') + url_helper_key
 
         logger.warn('%s: static resource does not exist: %s', page.link_url, link_url)
 
         url = link_url
 
-    return url
+    return context.get('static_url_prefix', '') + url
 
 def url(context, link_url):
     """
