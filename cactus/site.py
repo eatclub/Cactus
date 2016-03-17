@@ -39,8 +39,6 @@ logger = logging.getLogger(__name__)
 
 DEFAULT_PROVIDER = "aws"
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-
 
 class Site(SiteCompatibilityLayer):
     _path = None
@@ -142,17 +140,6 @@ class Site(SiteCompatibilityLayer):
         settings = {
             "TEMPLATE_DIRS": [self.template_path, self.page_path],
             "INSTALLED_APPS": ['django_markwhat'],
-            "TEMPLATES": [{
-                'BACKEND': 'django.template.backends.django.DjangoTemplates',
-                'DIRS': [self.template_path, self.page_path],
-                'APP_DIRS': False,
-                'OPTIONS': {
-                    'context_processors': [
-                        'django.template.context_processors.static'
-                    ],
-                    'builtins': ['cactus.template_tags']
-                }
-            }]
         }
 
         if self.locale is not None:
@@ -164,7 +151,12 @@ class Site(SiteCompatibilityLayer):
             })
 
         django.conf.settings.configure(**settings)
-        django.setup()
+
+        # - Importing here instead of the top-level makes it work on Python 3.x (!)
+        # - loading add_to_builtins from loader implictly loads the loader_tags built-in
+        # - Injecting our tags using add_to_builtins ensures that Cactus tags don't require an import
+        from django.template.loader import add_to_builtins
+        add_to_builtins('cactus.template_tags')
 
     def verify_path(self):
         """
