@@ -2,7 +2,7 @@ Django>=1.9.2
 django-markwhat>=1.4,<2
 markdown2
 argparse
-keyring
+keyring==4.0
 boto>=2.4.1
 tornado>=3.2
 colorlog
